@@ -1,11 +1,22 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.vitest.json"
-    }
-  ]
+  "include": [
+    "src/*.ts",
+    "src/**/*.ts",
+  ],
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2022",
+    "strict": true,
+    "moduleResolution": "node",
+    "declaration": true,
+    "sourceMap": true,
+    "types": [
+      "node",
+      "jest"
+    ],
+    "rootDir": "./src",
+    "outDir": "./dist"
+  }
 }
