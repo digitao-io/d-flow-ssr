@@ -1,6 +1,5 @@
 {
-  "apiBaseUrl": "http://localhost:3000",
-  "staticHtml": "./src/server",
+  "staticPath": "./src/server",
   "htmlTemplatePath": "./src/server/index.test.html",
   "port": 3001
 }

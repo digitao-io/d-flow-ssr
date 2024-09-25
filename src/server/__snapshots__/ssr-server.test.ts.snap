@@ -16,6 +16,12 @@ exports[`SsrServer should be able to fetch standard context 1`] = `
 </html>"
 `;
 
+exports[`SsrServer should handle static files 1`] = `
+"body {
+  margin: 0;
+}"
+`;
+
 exports[`SsrServer should work 1`] = `
 "<!DOCTYPE html>
 <html lang="en">

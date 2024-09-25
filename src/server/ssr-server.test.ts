@@ -121,4 +121,13 @@ describe("SsrServer", () => {
     expect(result.headers["content-type"]).toBe("text/html; charset=utf-8");
     expect(result.text).toMatchSnapshot();
   });
+
+  it("should handle static files", async () => {
+    const result = await supertest(server.express)
+      .get("/main.test.css");
+
+    expect(result.status).toBe(200);
+    expect(result.headers["content-type"]).toBe("text/css");
+    expect(result.text).toMatchSnapshot();
+  });
 });
