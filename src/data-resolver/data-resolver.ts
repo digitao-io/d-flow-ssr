@@ -1,36 +1,36 @@
 import { ConfigValue, isValueResolved, PageDetails, ResolvedComponentDetails, ResolvedPageDetails, ResolvedValue, ValueResolvingInfo } from "../models/page";
 import { DataCacheOption, DataResolvingCache } from "./data-resolving-cache";
+import { Configuration } from "../server/configuration";
 
-export interface DataResolvingContext {
-  apiBaseUrl: string;
-  pageBaseUrl: string;
+export interface DataResolvingContext<CONFIG extends Configuration> {
+  appConfig: CONFIG;
   pageUrlPath: string;
   pageUrlParams: Record<string, string>;
   pageUrlQueries: Record<string, string | string[]>;
 };
 
-export interface DataResolverConfig {
+export interface DataResolverConfig<CONFIG extends Configuration> {
   prefix: string[];
   cacheOption?: DataCacheOption;
   resolve(
-    context: DataResolvingContext,
+    context: DataResolvingContext<CONFIG>,
     sourcePath: string[],
   ): Promise<ResolvedValue> | ResolvedValue;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface DataResolverConfigLookup
-  extends Record<string, DataResolverConfig | DataResolverConfigLookup> {}
+export interface DataResolverConfigLookup<CONFIG extends Configuration>
+  extends Record<string, DataResolverConfig<CONFIG> | DataResolverConfigLookup<CONFIG>> {}
 
-function isDataResolverConfig(
-  v: DataResolverConfig | DataResolverConfigLookup,
-): v is DataResolverConfig {
+function isDataResolverConfig<CONFIG extends Configuration>(
+  v: DataResolverConfig<CONFIG> | DataResolverConfigLookup<CONFIG>,
+): v is DataResolverConfig<CONFIG> {
   const keys = Object.keys(v);
   return keys.includes("prefix") && keys.includes("resolve");
 }
 
-export class DataResolver {
-  private resolverConfigs: DataResolverConfigLookup;
+export class DataResolver<CONFIG extends Configuration> {
+  private resolverConfigs: DataResolverConfigLookup<CONFIG>;
   private cache: DataResolvingCache;
 
   public constructor() {
@@ -38,8 +38,12 @@ export class DataResolver {
     this.cache = new DataResolvingCache();
   }
 
-  public withResolver(resolverConfig: DataResolverConfig): this {
-    let currentLookup: DataResolverConfigLookup = this.resolverConfigs;
+  public clearCache() {
+    this.cache.clearAllCachedValues();
+  }
+
+  public withResolver(resolverConfig: DataResolverConfig<CONFIG>): this {
+    let currentLookup: DataResolverConfigLookup<CONFIG> = this.resolverConfigs;
     for (let i = 0; i < resolverConfig.prefix.length - 1; i++) {
       const lookupKey = resolverConfig.prefix[i];
 
@@ -47,7 +51,7 @@ export class DataResolver {
         currentLookup[lookupKey] = {};
       }
 
-      currentLookup = currentLookup[lookupKey] as DataResolverConfigLookup;
+      currentLookup = currentLookup[lookupKey] as DataResolverConfigLookup<CONFIG>;
 
       if (isDataResolverConfig(currentLookup)) {
         throw new Error(
@@ -63,7 +67,7 @@ export class DataResolver {
   }
 
   public async resolve(
-    resolvingContext: DataResolvingContext,
+    resolvingContext: DataResolvingContext<CONFIG>,
     pageDetails: PageDetails,
   ): Promise<ResolvedPageDetails> {
     const resolvedTopLevelFields = await this.resolveRecord(
@@ -104,7 +108,7 @@ export class DataResolver {
   }
 
   private async resolveRecord(
-    resolvingContext: DataResolvingContext,
+    resolvingContext: DataResolvingContext<CONFIG>,
     record: Record<string, ConfigValue>,
   ): Promise<Record<keyof typeof record, ResolvedValue>> {
     const result = {} as Record<keyof typeof record, ResolvedValue>;
@@ -121,7 +125,7 @@ export class DataResolver {
   }
 
   private async resolveValueUsingResolver(
-    resolvingContext: DataResolvingContext,
+    resolvingContext: DataResolvingContext<CONFIG>,
     resolvingInfo: ValueResolvingInfo,
   ): Promise<ResolvedValue> {
     const resolvedSource = [] as string[];
@@ -134,9 +138,9 @@ export class DataResolver {
       }
     }
 
-    let currentLookup: DataResolverConfig | DataResolverConfigLookup = this.resolverConfigs;
+    let currentLookup: DataResolverConfig<CONFIG> | DataResolverConfigLookup<CONFIG> = this.resolverConfigs;
     for (const lookupKey of resolvedSource) {
-      currentLookup = (currentLookup as DataResolverConfigLookup)[lookupKey];
+      currentLookup = (currentLookup as DataResolverConfigLookup<CONFIG>)[lookupKey];
       if (!currentLookup) {
         throw Error(`Cannot find resolver for source ${resolvingInfo.$source.join("/")}`);
       }
@@ -149,7 +153,7 @@ export class DataResolver {
       throw Error(`Cannot find resolver for source ${resolvingInfo.$source.join("/")}`);
     }
 
-    const resolverConfig = currentLookup as DataResolverConfig;
+    const resolverConfig = currentLookup as DataResolverConfig<CONFIG>;
 
     let resolvedValue: ResolvedValue;
 

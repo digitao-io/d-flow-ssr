@@ -4,10 +4,10 @@
     "src/**/*.ts",
   ],
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "esnext",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2022",
+    "target": "esnext",
     "strict": true,
     "moduleResolution": "node",
     "declaration": true,
