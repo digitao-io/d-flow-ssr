@@ -4,7 +4,7 @@
     "src/**/*.ts",
   ],
   "compilerOptions": {
-    "module": "esnext",
+    "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "target": "esnext",

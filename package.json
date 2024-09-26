@@ -1,20 +1,7 @@
 {
   "name": "d-flow-ssr",
-  "type": "module",
-  "exports": {
-    "./client": {
-      "import": "./dist/client/main.js",
-      "types": "./dist/client/main.d.ts"
-    },
-    "./server": {
-      "import": "./dist/server/main.js",
-      "types": "./dist/server/main.d.ts"
-    },
-    "./vue": {
-      "import": "./dist/vue/main.js",
-      "types": "./dist/vue/main.d.ts"
-    }
-  },
+  "main": "./dist/server/main.js",
+  "types": "./dist/server/main.d.ts",
   "scripts": {
     "postinstall": "npm run build",
     "build": "tsc -p tsconfig.dist.json",
