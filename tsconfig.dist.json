@@ -4,6 +4,7 @@
     "src/**/*.test.ts",
   ],
   "compilerOptions": {
+    "skipLibCheck": true,
     "strict": false
   }
 }

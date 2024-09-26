@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "compression": "^1.7.4",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "helmet": "^7.1.0",
     "sirv": "^2.0.4",
     "vue": "^3.5.8"
