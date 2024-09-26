@@ -1,7 +1,7 @@
 {
   "name": "d-flow-ssr",
-  "main": "./dist/server/main.js",
-  "types": "./dist/server/main.d.ts",
+  "main": "./dist/main.js",
+  "types": "./dist/main.d.ts",
   "scripts": {
     "postinstall": "npm run build",
     "build": "tsc -p tsconfig.dist.json",
