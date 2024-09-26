@@ -1,8 +1,44 @@
 import supertest from "supertest";
-import { Configuration } from "./configuration";
-import { createVueApp } from "../../vue/vue-app";
-import { DataResolver } from "../data-resolver/data-resolver";
+import { App, Component, createSSRApp, defineComponent, h, useSSRContext, VNode } from "vue";
 import { SsrServer } from "./ssr-server";
+import { Configuration } from "./configuration";
+import { DataResolver } from "../data-resolver/data-resolver";
+import { ResolvedPageDetails } from "../models/page";
+
+export function createVueApp(components: Record<string, Component>): App {
+  return createSSRApp(defineComponent({
+    setup() {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const ctx = useSSRContext() ?? (window as any).context;
+
+      const pageDetails = ctx.pageDetails as ResolvedPageDetails;
+
+      function render(slots: Record<string, () => VNode[]>): VNode {
+        return h(
+          components[pageDetails.template],
+          { config: pageDetails.config },
+          slots,
+        );
+      };
+
+      function renderSlots(): Record<string, () => VNode[]> {
+        const result = {} as Record<string, () => VNode[]>;
+        for (const [slotName, slotComponents] of Object.entries(pageDetails.slots)) {
+          result[slotName] = () => slotComponents.map((component) => {
+            return h(
+              components[component.component],
+              { config: component.config },
+            );
+          });
+        }
+
+        return result;
+      };
+
+      return () => render(renderSlots());
+    },
+  }));
+}
 
 async function initializeSsrServer() {
   const vueApp = createVueApp({

@@ -1,6 +1,14 @@
-import { ConfigValue, isValueResolved, PageDetails, ResolvedComponentDetails, ResolvedPageDetails, ResolvedValue, ValueResolvingInfo } from "../models/page";
+import {
+  ConfigValue,
+  isValueResolved,
+  PageDetails,
+  ResolvedComponentDetails,
+  ResolvedPageDetails,
+  ResolvedValue,
+  ValueResolvingInfo,
+} from "../models/page";
 import { DataCacheOption, DataResolvingCache } from "./data-resolving-cache";
-import { Configuration } from "../app/configuration";
+import { Configuration } from "../server/configuration";
 
 export interface DataResolvingContext<CONFIG extends Configuration> {
   appConfig: CONFIG;

@@ -1,5 +1,5 @@
 {
-  "staticPath": "./src/server/app",
-  "htmlTemplatePath": "./src/server/app/index.test.html",
+  "staticPath": "./src/server",
+  "htmlTemplatePath": "./src/server/index.test.html",
   "port": 3001
 }

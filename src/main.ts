@@ -1,9 +1,11 @@
-export { Configuration } from "./app/configuration";
+export {
+  Configuration,
+} from "./server/configuration";
 export {
   SsrServerConfig,
   PagesProvider,
   SsrServer,
-} from "./app/ssr-server";
+} from "./server/ssr-server";
 export {
   DataResolvingContext,
   DataResolverConfig,
