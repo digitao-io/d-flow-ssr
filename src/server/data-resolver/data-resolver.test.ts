@@ -1,5 +1,5 @@
-import { Configuration } from "../server/configuration";
 import { DataResolver, DataResolverConfig } from "./data-resolver";
+import { Configuration } from "../app/configuration";
 
 describe("DataResolver", () => {
   let dataResolver: DataResolver<Configuration>;

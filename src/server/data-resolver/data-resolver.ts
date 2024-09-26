@@ -1,6 +1,6 @@
 import { ConfigValue, isValueResolved, PageDetails, ResolvedComponentDetails, ResolvedPageDetails, ResolvedValue, ValueResolvingInfo } from "../models/page";
 import { DataCacheOption, DataResolvingCache } from "./data-resolving-cache";
-import { Configuration } from "../server/configuration";
+import { Configuration } from "../app/configuration";
 
 export interface DataResolvingContext<CONFIG extends Configuration> {
   appConfig: CONFIG;
@@ -19,7 +19,7 @@ export interface DataResolverConfig<CONFIG extends Configuration> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface DataResolverConfigLookup<CONFIG extends Configuration>
+interface DataResolverConfigLookup<CONFIG extends Configuration>
   extends Record<string, DataResolverConfig<CONFIG> | DataResolverConfigLookup<CONFIG>> {}
 
 function isDataResolverConfig<CONFIG extends Configuration>(

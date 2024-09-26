@@ -1,5 +1,5 @@
 import { App, Component, createSSRApp, defineComponent, h, useSSRContext, VNode } from "vue";
-import { ResolvedPageDetails } from "../models/page";
+import { ResolvedPageDetails } from "../server/models/page";
 
 export function createVueApp(components: Record<string, Component>): App {
   return createSSRApp(defineComponent({

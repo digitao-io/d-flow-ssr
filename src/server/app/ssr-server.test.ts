@@ -1,7 +1,7 @@
 import supertest from "supertest";
-import { DataResolver } from "../data-resolver/data-resolver";
-import { createVueApp } from "../vue/vue-app";
 import { Configuration } from "./configuration";
+import { createVueApp } from "../../vue/vue-app";
+import { DataResolver } from "../data-resolver/data-resolver";
 import { SsrServer } from "./ssr-server";
 
 async function initializeSsrServer() {
