@@ -20,3 +20,4 @@ export {
   PagesProvider,
   SsrServer,
 } from "./server/ssr-server";
+export { createVueApp } from "./vue/vue-app";
