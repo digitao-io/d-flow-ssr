@@ -1,4 +1,5 @@
 import express from "express";
+import Handlebars from "handlebars";
 import { Router } from "express";
 import { App } from "vue";
 import { renderToString } from "vue/server-renderer";
@@ -13,10 +14,17 @@ interface RenderResult {
   content: string;
 };
 
+interface TemplateParams {
+  language: Handlebars.SafeString;
+  title: Handlebars.SafeString;
+  head: Handlebars.SafeString;
+  content: Handlebars.SafeString;
+}
+
 export class DynamicRouter<CONFIG extends Configuration> {
   private vueApp: App;
   private dataResolver: DataResolver<CONFIG>;
-  private htmlTemplate: string;
+  private htmlTemplate: HandlebarsTemplateDelegate<TemplateParams>;
   private config: CONFIG;
 
   public router: Router;
@@ -29,7 +37,7 @@ export class DynamicRouter<CONFIG extends Configuration> {
   ) {
     this.vueApp = vueApp;
     this.dataResolver = dataResolver;
-    this.htmlTemplate = htmlTemplate;
+    this.htmlTemplate = Handlebars.compile(htmlTemplate);
     this.config = config;
 
     this.router = express.Router();
@@ -52,11 +60,12 @@ export class DynamicRouter<CONFIG extends Configuration> {
 
           const renderResult = await this.render(resolvedPageDetails);
 
-          const html = this.htmlTemplate
-            .replace("$$PAGE_LANGUAGE$$", renderResult.language)
-            .replace("$$PAGE_TITLE$$", renderResult.title)
-            .replace("$$PAGE_HEAD$$", renderResult.head)
-            .replace("$$PAGE_CONTENT$$", renderResult.content);
+          const html = this.htmlTemplate({
+            language: new Handlebars.SafeString(renderResult.language),
+            title: new Handlebars.SafeString(renderResult.title),
+            head: new Handlebars.SafeString(renderResult.head),
+            content: new Handlebars.SafeString(renderResult.content),
+          });
 
           res.status(200);
           res.contentType("text/html");
