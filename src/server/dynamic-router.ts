@@ -1,11 +1,11 @@
 import express from "express";
 import Handlebars from "handlebars";
 import { Router } from "express";
-import { App } from "vue";
 import { renderToString } from "vue/server-renderer";
 import { DataResolver } from "../data-resolver/data-resolver";
 import { Page, ResolvedPageDetails } from "../models/page";
 import { Configuration } from "./configuration";
+import { VueAppProvider } from "./ssr-server";
 
 interface RenderResult {
   language: string;
@@ -22,7 +22,7 @@ interface TemplateParams {
 }
 
 export class DynamicRouter<CONFIG extends Configuration> {
-  private vueApp: App;
+  private buildVueApp: VueAppProvider;
   private dataResolver: DataResolver<CONFIG>;
   private htmlTemplate: HandlebarsTemplateDelegate<TemplateParams>;
   private config: CONFIG;
@@ -30,12 +30,12 @@ export class DynamicRouter<CONFIG extends Configuration> {
   public router: Router;
 
   public constructor(
-    vueApp: App,
+    buildVueApp: VueAppProvider,
     dataResolver: DataResolver<CONFIG>,
     htmlTemplate: string,
     config: CONFIG,
   ) {
-    this.vueApp = vueApp;
+    this.buildVueApp = buildVueApp;
     this.dataResolver = dataResolver;
     this.htmlTemplate = Handlebars.compile(htmlTemplate);
     this.config = config;
@@ -88,7 +88,7 @@ export class DynamicRouter<CONFIG extends Configuration> {
 
   private async render(pageDetails: ResolvedPageDetails): Promise<RenderResult> {
     const ctx = { pageDetails };
-    const content = await renderToString(this.vueApp, ctx);
+    const content = await renderToString(this.buildVueApp(), ctx);
 
     return {
       language: pageDetails.language,

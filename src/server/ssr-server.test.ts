@@ -41,28 +41,6 @@ export function createVueApp(components: Record<string, Component>): App {
 }
 
 async function initializeSsrServer() {
-  const vueApp = createVueApp({
-    "default-template": {
-      props: {
-        config: { type: Object, required: true },
-      },
-      template: `
-        <main>
-          <h1>Hello world!</h1>
-          <p>message: {{ config.message }}</p>
-          <slot name="main" />
-          <slot name="sidebar" />
-        </main>
-      `,
-    },
-    "paragraph-component": {
-      props: {
-        config: { type: Object, required: true },
-      },
-      template: "<p>{{ config.message }}</p>",
-    },
-  });
-
   const dataResolver = new DataResolver<Configuration>();
   dataResolver
     .withResolver({
@@ -76,7 +54,27 @@ async function initializeSsrServer() {
 
   const server = new SsrServer<Configuration>();
   server.initialize({
-    vueApp,
+    buildVueApp: () => createVueApp({
+      "default-template": {
+        props: {
+          config: { type: Object, required: true },
+        },
+        template: `
+          <main>
+            <h1>Hello world!</h1>
+            <p>message: {{ config.message }}</p>
+            <slot name="main" />
+            <slot name="sidebar" />
+          </main>
+        `,
+      },
+      "paragraph-component": {
+        props: {
+          config: { type: Object, required: true },
+        },
+        template: "<p>{{ config.message }}</p>",
+      },
+    }),
     dataResolver,
     fetchPages: () => Promise.resolve([
       {

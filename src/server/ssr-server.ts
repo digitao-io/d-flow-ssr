@@ -11,12 +11,13 @@ import { Configuration, readConfiguration } from "./configuration";
 import { Page } from "../models/page";
 
 export interface SsrServerConfig<CONFIG extends Configuration> {
-  vueApp: App;
+  buildVueApp: VueAppProvider;
   dataResolver: DataResolver<CONFIG>;
   fetchPages: PagesProvider<CONFIG>;
   configPath: string;
 }
 
+export type VueAppProvider = () => App;
 export type PagesProvider<CONFIG> = (config: CONFIG) => Promise<Page[]>;
 
 export class SsrServer<CONFIG extends Configuration> {
@@ -43,7 +44,7 @@ export class SsrServer<CONFIG extends Configuration> {
     this.htmlTemplate = fs.readFileSync(this.config.htmlTemplatePath, "utf8");
 
     this.dynamicRouter = new DynamicRouter(
-      config.vueApp,
+      config.buildVueApp,
       config.dataResolver,
       this.htmlTemplate,
       this.config,
