@@ -13,16 +13,16 @@ import { Page } from "../models/page";
 export interface SsrServerConfig<CONFIG extends Configuration> {
   vueApp: App;
   dataResolver: DataResolver<CONFIG>;
-  fetchPages: PagesProvider;
+  fetchPages: PagesProvider<CONFIG>;
   configPath: string;
 }
 
-export type PagesProvider = () => Promise<Page[]>;
+export type PagesProvider<CONFIG> = (config: CONFIG) => Promise<Page[]>;
 
 export class SsrServer<CONFIG extends Configuration> {
   private dynamicRouter: DynamicRouter<CONFIG>;
   private dataResolver: DataResolver<CONFIG>;
-  private fetchPages: PagesProvider;
+  private fetchPages: PagesProvider<CONFIG>;
   private htmlTemplate: string;
   private config: CONFIG;
 
@@ -31,7 +31,7 @@ export class SsrServer<CONFIG extends Configuration> {
   public constructor() {
     this.dynamicRouter = null as unknown as DynamicRouter<CONFIG>;
     this.dataResolver = null as unknown as DataResolver<CONFIG>;
-    this.fetchPages = null as unknown as PagesProvider;
+    this.fetchPages = null as unknown as PagesProvider<CONFIG>;
     this.htmlTemplate = null as unknown as string;
     this.config = null as unknown as CONFIG;
 
@@ -51,7 +51,7 @@ export class SsrServer<CONFIG extends Configuration> {
     this.dataResolver = config.dataResolver;
     this.fetchPages = config.fetchPages;
 
-    const pages = await this.fetchPages();
+    const pages = await this.fetchPages(this.config);
     this.dynamicRouter.buildRoutes(pages);
 
     this.express = express();
@@ -78,7 +78,7 @@ export class SsrServer<CONFIG extends Configuration> {
     });
 
     this.express.post("/maintenance/page/fetch", async (_, res) => {
-      const pages = await this.fetchPages();
+      const pages = await this.fetchPages(this.config);
       this.dynamicRouter.buildRoutes(pages);
 
       res.status(200);
