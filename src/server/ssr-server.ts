@@ -59,10 +59,7 @@ export class SsrServer<CONFIG extends Configuration> {
 
     this.express.use(helmet({
       contentSecurityPolicy: {
-        directives: {
-          "script-src": ["'self'", "'unsafe-inline'"],
-          "img-src": ["'self'", "data:", "https:"],
-        },
+        directives: this.config.contentSecurityPolicy,
       },
     }));
 

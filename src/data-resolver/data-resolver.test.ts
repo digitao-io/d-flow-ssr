@@ -2,6 +2,13 @@ import { DataResolver, DataResolverConfig } from "./data-resolver";
 import { Configuration } from "../server/configuration";
 
 describe("DataResolver", () => {
+  const appConfig = {
+    staticPath: "./dist",
+    htmlTemplatePath: "./dist/index.html",
+    port: 3001,
+    contentSecurityPolicy: {},
+  };
+
   let dataResolver: DataResolver<Configuration>;
 
   let httpDataResolver: DataResolverConfig<Configuration>["resolve"];
@@ -55,11 +62,7 @@ describe("DataResolver", () => {
     await expect(async () => {
       await dataResolver.resolve(
         {
-          appConfig: {
-            staticPath: "./dist",
-            htmlTemplatePath: "./dist/index.html",
-            port: 3001,
-          },
+          appConfig,
           pageUrlPath: "/key/example-key",
           pageUrlParams: { key: "example-key" },
           pageUrlQueries: {},
@@ -80,11 +83,7 @@ describe("DataResolver", () => {
   it("should resolve language and title", async () => {
     const result = await dataResolver.resolve(
       {
-        appConfig: {
-          staticPath: "./dist",
-          htmlTemplatePath: "./dist/index.html",
-          port: 3001,
-        },
+        appConfig,
         pageUrlPath: "/key/example-key",
         pageUrlParams: { lang: "en", title: "Hello World!" },
         pageUrlQueries: {},
@@ -110,11 +109,7 @@ describe("DataResolver", () => {
   it("should resolve config", async () => {
     const result = await dataResolver.resolve(
       {
-        appConfig: {
-          staticPath: "./dist",
-          htmlTemplatePath: "./dist/index.html",
-          port: 3001,
-        },
+        appConfig,
         pageUrlPath: "/key/example-key",
         pageUrlParams: { foo: "Hello", bar: "Goodbye" },
         pageUrlQueries: {},
@@ -146,11 +141,7 @@ describe("DataResolver", () => {
   it("should resolve slots", async () => {
     const result = await dataResolver.resolve(
       {
-        appConfig: {
-          staticPath: "./dist",
-          htmlTemplatePath: "./dist/index.html",
-          port: 3001,
-        },
+        appConfig,
         pageUrlPath: "/key/example-key",
         pageUrlParams: { foo: "Hello", bar: "Goodbye" },
         pageUrlQueries: {},
@@ -206,11 +197,7 @@ describe("DataResolver", () => {
   it("should resolve source recursively", async () => {
     const result = await dataResolver.resolve(
       {
-        appConfig: {
-          staticPath: "./dist",
-          htmlTemplatePath: "./dist/index.html",
-          port: 3001,
-        },
+        appConfig,
         pageUrlPath: "/key/example-key",
         pageUrlParams: { foo: "Hello", bar: "Goodbye" },
         pageUrlQueries: {},
@@ -267,11 +254,7 @@ describe("DataResolver", () => {
 
     const result = await dataResolver.resolve(
       {
-        appConfig: {
-          staticPath: "./dist",
-          htmlTemplatePath: "./dist/index.html",
-          port: 3001,
-        },
+        appConfig,
         pageUrlPath: "/key/example-key",
         pageUrlParams: { foo: "Hello", bar: "Goodbye" },
         pageUrlQueries: {},
@@ -304,11 +287,7 @@ describe("DataResolver", () => {
   it("should only call resolver once if the value is cached", async () => {
     const result = await dataResolver.resolve(
       {
-        appConfig: {
-          staticPath: "./dist",
-          htmlTemplatePath: "./dist/index.html",
-          port: 3001,
-        },
+        appConfig,
         pageUrlPath: "/key/example-key",
         pageUrlParams: { foo: "Hello" },
         pageUrlQueries: {},

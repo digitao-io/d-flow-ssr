@@ -4,6 +4,7 @@ export interface Configuration {
   staticPath: string;
   htmlTemplatePath: string;
   port: number;
+  contentSecurityPolicy: Record<string, string[] | null>;
 }
 
 export function readConfiguration<CONFIG extends Configuration>(configPath: string): CONFIG {
