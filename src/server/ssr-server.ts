@@ -52,9 +52,6 @@ export class SsrServer<CONFIG extends Configuration> {
     this.dataResolver = config.dataResolver;
     this.fetchPages = config.fetchPages;
 
-    const pages = await this.fetchPages(this.config);
-    this.dynamicRouter.buildRoutes(pages);
-
     this.express = express();
 
     this.express.use(helmet({
