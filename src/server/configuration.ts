@@ -1,10 +1,11 @@
 import fs from "node:fs";
+import { HelmetOptions } from "helmet";
 
 export interface Configuration {
   staticPath: string;
   htmlTemplatePath: string;
   port: number;
-  contentSecurityPolicy: Record<string, string[] | null>;
+  helmetConfig: Readonly<HelmetOptions>;
 }
 
 export function readConfiguration<CONFIG extends Configuration>(configPath: string): CONFIG {

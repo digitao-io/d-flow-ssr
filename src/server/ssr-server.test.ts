@@ -135,6 +135,9 @@ describe("SsrServer", () => {
 
   beforeEach(async () => {
     server = await initializeSsrServer();
+
+    await supertest(server.express)
+      .post("/maintenance/page/fetch");
   });
 
   it("should work", async () => {

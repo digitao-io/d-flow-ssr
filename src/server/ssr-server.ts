@@ -54,11 +54,7 @@ export class SsrServer<CONFIG extends Configuration> {
 
     this.express = express();
 
-    this.express.use(helmet({
-      contentSecurityPolicy: {
-        directives: this.config.contentSecurityPolicy,
-      },
-    }));
+    this.express.use(helmet(this.config.helmetConfig));
 
     this.express.use(compression());
 

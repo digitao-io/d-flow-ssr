@@ -6,7 +6,7 @@ describe("DataResolver", () => {
     staticPath: "./dist",
     htmlTemplatePath: "./dist/index.html",
     port: 3001,
-    contentSecurityPolicy: {},
+    helmetConfig: {},
   };
 
   let dataResolver: DataResolver<Configuration>;
